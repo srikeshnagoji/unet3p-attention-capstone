@@ -80,8 +80,8 @@ def train_model(model_name, model, train_loader, val_loader, train_loss, optimiz
 
     print(f"[INFO] Model is initializing... {model_name}")
 
-    checkpoint_dir = "/Users/srikeshnagoji/Documents/PythonWorkSpace/jupyter_lab_workspace/PES/CAPSTONE/v3_pytorch_refactored/checkpoints"
-    best_model_dir = f"/Users/srikeshnagoji/Documents/PythonWorkSpace/jupyter_lab_workspace/PES/CAPSTONE/v3_pytorch_refactored/checkpoints/{model_name}_best"
+    checkpoint_dir = f"/Users/srikeshnagoji/Documents/PythonWorkSpace/jupyter_lab_workspace/PES/CAPSTONE/v3_pytorch_refactored/checkpoints/{model_name}"
+    best_model_dir = f"{checkpoint_dir}/{model_name}_best"
 
     loss_history = []
     train_history = []
