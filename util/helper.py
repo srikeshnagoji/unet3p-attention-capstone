@@ -9,6 +9,8 @@ from tqdm.notebook import tqdm
 import time
 import shutil
 
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
 def pos_neg_diagnosis(mask_path):
     """
     To assign 0 or 1 based on the presence of tumor.
@@ -70,6 +72,7 @@ def train_model(model_name, model, train_loader, val_loader, train_loss, optimiz
     pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"trainable params of {model_name} model: {pytorch_total_params}")
 
+    scheduler = ReduceLROnPlateau(optimizer, 'min')
 
     start_epoch=0
 
@@ -121,6 +124,8 @@ def train_model(model_name, model, train_loader, val_loader, train_loss, optimiz
         val_mean_iou = compute_iou(model, val_loader, device=device)
         
         mean_loss = np.array(losses).mean()
+        scheduler.step(mean_loss)
+
         loss_history.append(mean_loss)
         train_history.append(np.array(train_iou).mean())
         val_history.append(val_mean_iou)
