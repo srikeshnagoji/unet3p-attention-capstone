@@ -175,6 +175,7 @@ def plot_model_history(model_name,
     plt.ylabel("DICE", fontsize=15)
 
     fn = str(int(time.time())) + ".png"
+    plt.savefig(f'{model_name}/{model_name}_dice.png', bbox_inches='tight')
     plt.show()
 
 def viz_pred_output(model, loader, idx, test_dataset, device="mps", threshold=0.3):
