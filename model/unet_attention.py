@@ -114,4 +114,4 @@ class AttentionUNet(nn.Module):
         
         d1 = self.conv_1x1(d2)
         
-        return d1
+        return F.sigmoid(d1)

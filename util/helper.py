@@ -67,11 +67,13 @@ def load_ckp(checkpoint_fpath, model, optimizer):
     return model, optimizer, last_epoch
 
 def train_model(model_name, model, train_loader, val_loader, train_loss, optimizer, lr_scheduler, num_epochs, device, ckp_path:str=None):
+    # printing number of params
     pytorch_total_params = sum(p.numel() for p in model.parameters())
     print(f"total params of {model_name} model: {pytorch_total_params}")
     pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"trainable params of {model_name} model: {pytorch_total_params}")
 
+    # take smaller steps as we reach minimum
     scheduler = ReduceLROnPlateau(optimizer, 'min')
 
     start_epoch=0
@@ -115,8 +117,11 @@ def train_model(model_name, model, train_loader, val_loader, train_loss, optimiz
             losses.append(loss.item())
             train_iou.append(train_dice)
 
+# reset gradients
             optimizer.zero_grad()
+            # backprop to calc gradients
             loss.backward()
+            # update weights
             optimizer.step()
             
             
@@ -184,8 +189,8 @@ def viz_pred_output(model, loader, idx, test_dataset, device="mps", threshold=0.
     with torch.no_grad():
 
 #         for i_step, (data, target) in enumerate(loader):
-        target = torch.tensor(test_dataset[idx][1])
-        data = torch.tensor(test_dataset[idx][0])
+        target = torch.tensor(test_dataset.get_image_and_mask(idx)[1])
+        data = torch.tensor(test_dataset.get_image_and_mask(idx)[0])
 
         data = data.to(device).unsqueeze(0)
         target = target.to(device).unsqueeze(0)
@@ -206,6 +211,7 @@ def viz_pred_output(model, loader, idx, test_dataset, device="mps", threshold=0.
 
         op = out_cut[0][0]
         axarr[1].imshow(op)
+        return targ, op
 
 
 
